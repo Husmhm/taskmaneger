@@ -1,0 +1,23 @@
+services:
+  task-manager-db:
+    image: postgres:17.2
+    container_name: task-manager-db
+    environment:
+      POSTGRES_DB: task_manager_db
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "password123"
+    ports:
+      - "5434:5432"
+    volumes:
+      - task_manager_db_data:/var/lib/postgresql/data
+
+    restart: always
+    networks:
+      - task_manager_network
+
+volumes:
+  task_manager_db_data:
+
+networks:
+  task_manager_network:
+    driver: bridge

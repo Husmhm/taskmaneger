@@ -1,4 +1,4 @@
-package repository
+package postgresql
 
 import (
 	"github.com/jinzhu/gorm"
@@ -12,7 +12,7 @@ type DB struct {
 }
 
 func NewDB(connectionString string) (*DB, error) {
-	db, err := gorm.Open("postgresql", connectionString)
+	db, err := gorm.Open("postgres", connectionString)
 	if err != nil {
 		return nil, err
 	}
