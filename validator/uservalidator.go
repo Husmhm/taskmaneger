@@ -43,3 +43,24 @@ func (v Validator) checkPhoneNumberUniqueness(ctx context.Context, value interfa
 	}
 	return nil
 }
+
+func (v Validator) ValidateLoginRequest(req param.LoginRequest) error {
+	err := validation.ValidateStruct(&req,
+		validation.Field(&req.PhoneNumber, validation.Required,
+			validation.Match(regexp.MustCompile(phoneNumberRegex)).Error(errmsg.ErrorMsgPhoneNumberIsNotValid),
+			validation.By(v.doesPhoneNumberExist)),
+		validation.Field(&req.Password, validation.Required),
+	)
+
+	return err
+}
+
+func (v Validator) doesPhoneNumberExist(value interface{}) error {
+	phoneNumber := value.(string)
+	// check uniqueness of phone number
+	_, err := v.repo.GetUserByPhoneNumber(phoneNumber)
+	if err != nil {
+		return fmt.Errorf(errmsg.ErrorMsgNotFound)
+	}
+	return nil
+}

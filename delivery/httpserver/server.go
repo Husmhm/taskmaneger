@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"taskmaneger/delivery/httpserver/userhandler"
+	"taskmaneger/service/authservice"
 	user "taskmaneger/service/userservice"
 )
 
@@ -12,9 +13,9 @@ type Server struct {
 	Router      *echo.Echo
 }
 
-func New(userSvc user.Service) Server {
+func New(userSvc user.Service, authSvc authservice.Service) Server {
 	return Server{
-		userhandler: userhandler.New(userSvc),
+		userhandler: userhandler.New(userSvc, authSvc),
 		Router:      echo.New(),
 	}
 }

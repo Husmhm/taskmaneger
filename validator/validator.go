@@ -1,6 +1,9 @@
 package validator
 
-import "context"
+import (
+	"context"
+	models "taskmaneger/model"
+)
 
 const (
 	phoneNumberRegex = `^\+989[0-9]{9}$`
@@ -8,6 +11,7 @@ const (
 
 type Repository interface {
 	IsPhoneNumberUnique(ctx context.Context, phoneNumber string) (bool, error)
+	GetUserByPhoneNumber(phoneNumber string) (models.User, error)
 }
 
 type Validator struct {
