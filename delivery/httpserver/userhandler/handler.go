@@ -5,17 +5,15 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"taskmaneger/param"
-	"taskmaneger/service/authservice"
 	user "taskmaneger/service/userservice"
 )
 
 type Handler struct {
-	authSvc authservice.Service
 	userSvc user.Service
 }
 
-func New(userSvc user.Service, authSvc authservice.Service) Handler {
-	return Handler{userSvc: userSvc, authSvc: authSvc}
+func New(userSvc user.Service) Handler {
+	return Handler{userSvc: userSvc}
 }
 
 func (h Handler) userRegister(c echo.Context) error {
