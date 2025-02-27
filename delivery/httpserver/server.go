@@ -3,6 +3,7 @@ package httpserver
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"taskmaneger/adapter/redis"
 	"taskmaneger/delivery/httpserver/taskhandler"
 	"taskmaneger/delivery/httpserver/userhandler"
 	"taskmaneger/service/authservice"
@@ -16,10 +17,10 @@ type Server struct {
 	Router      *echo.Echo
 }
 
-func New(userSvc user.Service, taskSvc taskservice.Service, authSvc authservice.Service, authCfg authservice.Config) Server {
+func New(userSvc user.Service, taskSvc taskservice.Service, authSvc authservice.Service, authCfg authservice.Config, redisRepo redis.Adapter) Server {
 	return Server{
 		userhandler: userhandler.New(userSvc),
-		taskhandler: taskhandler.New(taskSvc, authSvc, authCfg),
+		taskhandler: taskhandler.New(taskSvc, authSvc, authCfg, redisRepo),
 		Router:      echo.New(),
 	}
 }

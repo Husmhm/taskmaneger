@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"taskmaneger/adapter/redis"
 	"taskmaneger/param"
 	"taskmaneger/pkg/claim"
 	"taskmaneger/service/authservice"
@@ -11,13 +12,14 @@ import (
 )
 
 type Handler struct {
-	taskSvc taskservice.Service
-	authSvc authservice.Service
-	authCfg authservice.Config
+	taskSvc   taskservice.Service
+	authSvc   authservice.Service
+	authCfg   authservice.Config
+	redisRepo redis.Adapter
 }
 
-func New(taskSvc taskservice.Service, authSvc authservice.Service, authCfg authservice.Config) Handler {
-	return Handler{taskSvc: taskSvc, authSvc: authSvc, authCfg: authCfg}
+func New(taskSvc taskservice.Service, authSvc authservice.Service, authCfg authservice.Config, redisRepo redis.Adapter) Handler {
+	return Handler{taskSvc: taskSvc, authSvc: authSvc, authCfg: authCfg, redisRepo: redisRepo}
 }
 
 func (h Handler) CreateTask(c echo.Context) error {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"log"
+	"taskmaneger/adapter/redis"
 	"taskmaneger/config"
 	"taskmaneger/delivery/httpserver"
 	"taskmaneger/repository/postgresql"
@@ -19,13 +20,14 @@ func main() {
 	cfg := config.Load("config.yml")
 	fmt.Printf("cfg2: %+v\n", cfg)
 
-	userSvc, authSvc, taskSvc := setupservice(cfg)
-	server := httpserver.New(userSvc, taskSvc, authSvc, cfg.Auth)
+	userSvc, authSvc, taskSvc, redisRepo := setupservice(cfg)
+
+	server := httpserver.New(userSvc, taskSvc, authSvc, cfg.Auth, redisRepo)
 
 	server.Start()
 }
 
-func setupservice(cfg config.Config) (user.Service, authservice.Service, taskservice.Service) {
+func setupservice(cfg config.Config) (user.Service, authservice.Service, taskservice.Service, redis.Adapter) {
 	postgresqlRepo, err := postgresql.NewDB("host=localhost port=5435 user=admin dbname=task_manager_db sslmode=disable password=password123")
 	if err != nil {
 		fmt.Println(err)
@@ -36,6 +38,8 @@ func setupservice(cfg config.Config) (user.Service, authservice.Service, taskser
 
 	authSvc := authservice.New(cfg.Auth)
 
+	redisRepo := redis.New(cfg.Redis)
+
 	userPostgresql := postgresqluser.New(postgresqlRepo)
 	uV := validator.New(userPostgresql)
 	userSvc := user.New(userPostgresql, uV, authSvc)
@@ -43,5 +47,5 @@ func setupservice(cfg config.Config) (user.Service, authservice.Service, taskser
 	taskPosrgresql := postgersqltask.New(postgresqlRepo)
 	taskSvc := taskservice.New(taskPosrgresql)
 
-	return userSvc, authSvc, taskSvc
+	return userSvc, authSvc, taskSvc, redisRepo
 }

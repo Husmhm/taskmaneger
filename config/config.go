@@ -1,7 +1,11 @@
 package config
 
-import "taskmaneger/service/authservice"
+import (
+	"taskmaneger/adapter/redis"
+	"taskmaneger/service/authservice"
+)
 
 type Config struct {
-	Auth authservice.Config `koanf:"auth"`
+	Auth  authservice.Config `koanf:"auth"`
+	Redis redis.Config       `koanf:"redis"`
 }

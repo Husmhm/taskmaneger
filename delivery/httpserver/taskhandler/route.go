@@ -2,14 +2,22 @@ package taskhandler
 
 import (
 	"github.com/labstack/echo/v4"
-	"taskmaneger/delivery/httpserver/middleware"
+	"github.com/labstack/echo/v4/middleware"
+	mw "taskmaneger/delivery/httpserver/middleware"
+	"time"
 )
 
 func (h Handler) SetRoutes(e *echo.Echo) {
 	tasksGroup := e.Group("/tasks")
 
-	tasksGroup.POST("/create", h.CreateTask, middleware.Auth(h.authSvc, h.authCfg))
-	tasksGroup.GET("/:id/view", h.ReadTask, middleware.Auth(h.authSvc, h.authCfg))
-	tasksGroup.PUT("/:id/update", h.UpdateTask, middleware.Auth(h.authSvc, h.authCfg))
-	tasksGroup.DELETE("/:id/delete", h.DeleteTask, middleware.Auth(h.authSvc, h.authCfg))
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	e.Use(mw.Auth(h.authSvc, h.authCfg))
+	e.Use(mw.RateLimiter(h.redisRepo.Client(), 10, time.Minute))
+
+	tasksGroup.POST("/create", h.CreateTask)
+	tasksGroup.GET("/:id/view", h.ReadTask)
+	tasksGroup.PUT("/:id/update", h.UpdateTask)
+	tasksGroup.DELETE("/:id/delete", h.DeleteTask)
 }
