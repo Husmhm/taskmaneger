@@ -120,10 +120,10 @@ func (s Service) List(req param.ListTaskTitlesRequest, userId uint) (param.ListT
 
 	// Check if data is in cache
 	if err := s.redisRepo.Get(cacheKey, &resp); err == nil {
-		fmt.Println("000000")
+
 		return resp, nil
 	}
-	fmt.Println("11111111")
+
 	// If not in cache, fetch from database
 	titleList, err := s.repo.GetListOfTaskTitels(userId)
 	if err != nil {
