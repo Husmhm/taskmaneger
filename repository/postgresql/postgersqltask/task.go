@@ -46,3 +46,13 @@ func (d DB) DeleteTask(id uint) error {
 
 	return nil
 }
+
+func (d DB) GetListOfTaskTitels(userID uint) ([]string, error) {
+	var titles []string
+
+	if err := d.conn.Conn.Model(&models.Task{}).Where("user_id = ?", userID).Pluck("title", &titles).Error; err != nil {
+		return nil, err
+	}
+
+	return titles, nil
+}

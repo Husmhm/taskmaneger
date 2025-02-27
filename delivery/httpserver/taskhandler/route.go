@@ -13,11 +13,11 @@ func (h Handler) SetRoutes(e *echo.Echo) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.Use(mw.Auth(h.authSvc, h.authCfg))
 	e.Use(mw.RateLimiter(h.redisRepo.Client(), 10, time.Minute))
 
-	tasksGroup.POST("/create", h.CreateTask)
-	tasksGroup.GET("/:id/view", h.ReadTask)
-	tasksGroup.PUT("/:id/update", h.UpdateTask)
-	tasksGroup.DELETE("/:id/delete", h.DeleteTask)
+	tasksGroup.POST("/create", h.CreateTask, mw.Auth(h.authSvc, h.authCfg))
+	tasksGroup.GET("/:id/view", h.ReadTask, mw.Auth(h.authSvc, h.authCfg))
+	tasksGroup.PUT("/:id/update", h.UpdateTask, mw.Auth(h.authSvc, h.authCfg))
+	tasksGroup.DELETE("/:id/delete", h.DeleteTask, mw.Auth(h.authSvc, h.authCfg))
+	tasksGroup.GET("/", h.ListTitleTasks, mw.Auth(h.authSvc, h.authCfg))
 }

@@ -10,6 +10,7 @@ import (
 	"taskmaneger/repository/postgresql"
 	"taskmaneger/repository/postgresql/postgersqltask"
 	"taskmaneger/repository/postgresql/postgresqluser"
+	"taskmaneger/repository/redis/redistasktitles"
 	"taskmaneger/service/authservice"
 	"taskmaneger/service/taskservice"
 	user "taskmaneger/service/userservice"
@@ -39,13 +40,14 @@ func setupservice(cfg config.Config) (user.Service, authservice.Service, taskser
 	authSvc := authservice.New(cfg.Auth)
 
 	redisRepo := redis.New(cfg.Redis)
+	redisTaskTitle := redistasktitles.New(redisRepo)
 
 	userPostgresql := postgresqluser.New(postgresqlRepo)
 	uV := validator.New(userPostgresql)
 	userSvc := user.New(userPostgresql, uV, authSvc)
 
 	taskPosrgresql := postgersqltask.New(postgresqlRepo)
-	taskSvc := taskservice.New(taskPosrgresql)
+	taskSvc := taskservice.New(taskPosrgresql, redisTaskTitle)
 
 	return userSvc, authSvc, taskSvc, redisRepo
 }

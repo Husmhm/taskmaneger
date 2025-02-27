@@ -3,7 +3,7 @@ auth:
   sign_key: jwt_secret
 
 redis:
-  port: 6380
+  port: 6385
   host: localhost
   db: 0
   password: ""

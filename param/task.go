@@ -40,3 +40,9 @@ type DeleteTaskRequest struct {
 type DeleteTaskResponse struct {
 	Message string `json:"message"`
 }
+
+type ListTaskTitlesRequest struct {
+}
+type ListTaskTitlesResponse struct {
+	Tasks []string `json:"task_titles"`
+}

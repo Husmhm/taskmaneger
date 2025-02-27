@@ -85,3 +85,18 @@ func (h Handler) DeleteTask(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+func (h Handler) ListTitleTasks(c echo.Context) error {
+	var req param.ListTaskTitlesRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest)
+	}
+
+	claims := claim.GetClaimsFromEchoContext(c)
+
+	resp, err := h.taskSvc.List(req, claims.UserID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, resp)
+}

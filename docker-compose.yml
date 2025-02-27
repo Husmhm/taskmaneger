@@ -17,18 +17,19 @@ services:
 
   task-manager-redis:
     image: bitnami/redis:6.2
-    container_name: gameapp-redis
+    container_name: task-manager-redis
     restart: always
     ports:
-      - '6380:6379'
+      - '6385:6379'
     command: redis-server --loglevel warning --protected-mode no
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
-      - gameapp-redis-data:/data
+      - task-manager-redis-data:/data
 
 volumes:
   task_manager_db_data:
+  task-manager-redis-data:
 
 networks:
   task_manager_network:
