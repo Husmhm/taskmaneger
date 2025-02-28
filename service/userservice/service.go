@@ -6,8 +6,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	models "taskmaneger/model"
 	"taskmaneger/param"
-	"taskmaneger/service/authservice"
-	"taskmaneger/validator"
 )
 
 type Repository interface {
@@ -20,13 +18,18 @@ type AuthGenerator interface {
 	CreateRefreshToken(user models.User) (string, error)
 }
 
+type Validator interface {
+	ValidateRegisterRequest(ctx context.Context, req param.RegisterRequest) error
+	ValidateLoginRequest(req param.LoginRequest) error
+}
+
 type Service struct {
 	repo      Repository
-	validator validator.Validator
+	validator Validator
 	auth      AuthGenerator
 }
 
-func New(repo Repository, validator validator.Validator, auth authservice.Service) Service {
+func New(repo Repository, validator Validator, auth AuthGenerator) Service {
 	return Service{repo: repo, validator: validator, auth: auth}
 }
 
