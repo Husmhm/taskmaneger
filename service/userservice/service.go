@@ -1,7 +1,6 @@
 package user
 
 import (
-	"context"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	models "taskmaneger/model"
@@ -9,7 +8,7 @@ import (
 )
 
 type Repository interface {
-	Register(ctx context.Context, u models.User) (models.User, error)
+	Register(u models.User) (models.User, error)
 	GetUserByPhoneNumber(phone string) (models.User, error)
 }
 
@@ -19,7 +18,7 @@ type AuthGenerator interface {
 }
 
 type Validator interface {
-	ValidateRegisterRequest(ctx context.Context, req param.RegisterRequest) error
+	ValidateRegisterRequest(req param.RegisterRequest) error
 	ValidateLoginRequest(req param.LoginRequest) error
 }
 
@@ -33,8 +32,8 @@ func New(repo Repository, validator Validator, auth AuthGenerator) Service {
 	return Service{repo: repo, validator: validator, auth: auth}
 }
 
-func (s Service) Register(ctx context.Context, req param.RegisterRequest) (param.RegisterResponse, error) {
-	vErr := s.validator.ValidateRegisterRequest(ctx, req)
+func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, error) {
+	vErr := s.validator.ValidateRegisterRequest(req)
 
 	if vErr != nil {
 		return param.RegisterResponse{}, vErr
@@ -52,7 +51,7 @@ func (s Service) Register(ctx context.Context, req param.RegisterRequest) (param
 		Name:        req.Name,
 		Password:    hashStr,
 	}
-	createdUser, err := s.repo.Register(ctx, user)
+	createdUser, err := s.repo.Register(user)
 	if err != nil {
 		return param.RegisterResponse{}, fmt.Errorf("unexpected error : %w", err)
 	}

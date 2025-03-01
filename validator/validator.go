@@ -1,7 +1,6 @@
 package validator
 
 import (
-	"context"
 	models "taskmaneger/model"
 )
 
@@ -10,7 +9,7 @@ const (
 )
 
 type Repository interface {
-	IsPhoneNumberUnique(ctx context.Context, phoneNumber string) (bool, error)
+	IsPhoneNumberUnique(phoneNumber string) (bool, error)
 	GetUserByPhoneNumber(phoneNumber string) (models.User, error)
 }
 

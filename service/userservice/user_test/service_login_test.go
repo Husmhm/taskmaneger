@@ -1,10 +1,8 @@
 package user_test
 
 import (
-	"context"
 	"errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	models "taskmaneger/model"
@@ -12,49 +10,6 @@ import (
 	user "taskmaneger/service/userservice"
 	"testing"
 )
-
-// Mock structures
-type MockValidator struct {
-	mock.Mock
-}
-
-func (m *MockValidator) ValidateLoginRequest(req param.LoginRequest) error {
-	args := m.Called(req)
-	return args.Error(0)
-}
-
-func (m *MockValidator) ValidateRegisterRequest(ctx context.Context, req param.RegisterRequest) error {
-	args := m.Called(req)
-	return args.Error(0)
-}
-
-type MockRepository struct {
-	mock.Mock
-}
-
-func (m *MockRepository) GetUserByPhoneNumber(phoneNumber string) (models.User, error) {
-	args := m.Called(phoneNumber)
-	return args.Get(0).(models.User), args.Error(1)
-}
-
-func (m *MockRepository) Register(ctx context.Context, u models.User) (models.User, error) {
-	args := m.Called(ctx, u)
-	return args.Get(0).(models.User), args.Error(1)
-}
-
-type MockAuth struct {
-	mock.Mock
-}
-
-func (m *MockAuth) CreateAccessToken(user models.User) (string, error) {
-	args := m.Called(user)
-	return args.String(0), args.Error(1)
-}
-
-func (m *MockAuth) CreateRefreshToken(user models.User) (string, error) {
-	args := m.Called(user)
-	return args.String(0), args.Error(1)
-}
 
 func TestService_Login(t *testing.T) {
 	mockValidator := new(MockValidator)

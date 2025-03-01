@@ -1,14 +1,13 @@
 package postgresqluser
 
 import (
-	"context"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	models "taskmaneger/model"
 	"taskmaneger/pkg/errmsg"
 )
 
-func (d *DB) Register(ctx context.Context, u models.User) (models.User, error) {
+func (d *DB) Register(u models.User) (models.User, error) {
 
 	if err := d.conn.Conn.Create(&u).Error; err != nil {
 		return models.User{}, err
@@ -16,7 +15,7 @@ func (d *DB) Register(ctx context.Context, u models.User) (models.User, error) {
 	return u, nil
 }
 
-func (d *DB) IsPhoneNumberUnique(ctx context.Context, phoneNumber string) (bool, error) {
+func (d *DB) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 	var user models.User
 	err := d.conn.Conn.Where("phone_number = ?", phoneNumber).First(&user).Error
 
