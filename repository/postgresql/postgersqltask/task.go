@@ -26,10 +26,12 @@ func (d DB) GetTaskById(id uint) (models.Task, error) {
 }
 
 func (d DB) UpdateTask(task models.Task) (models.Task, error) {
-
 	result := d.conn.Conn.Model(task).Updates(task)
 	if result.Error != nil {
 		return models.Task{}, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return models.Task{}, gorm.ErrRecordNotFound
 	}
 	return task, nil
 }

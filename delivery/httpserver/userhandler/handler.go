@@ -22,7 +22,7 @@ func (h Handler) userRegister(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
-	resp, err := h.userSvc.Register(c.Request().Context(), req)
+	resp, err := h.userSvc.Register(req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
